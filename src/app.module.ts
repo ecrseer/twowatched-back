@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TwochatGateway } from './twochat.gateway';
 
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -14,6 +13,6 @@ import { TwaroomModule } from './twaroom/twaroom.module';
     TwaroomModule,
   ],
   controllers: [AppController],
-  providers: [AppService, TwochatGateway],
+  providers: [AppService],
 })
 export class AppModule {}

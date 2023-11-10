@@ -4,6 +4,7 @@ import { UpdateTwaroomDto } from './dto/update-twaroom.dto';
 import { Twaroom } from './entities/twaroom.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { TwaMessage } from './entities/twamessage.schema';
 
 @Injectable()
 export class TwaroomService {
@@ -22,11 +23,16 @@ export class TwaroomService {
   }
 
   findOne(id: number) {
+    this.TwaroomModel.findOne({});
     return `This action returns a #${id} twaroom`;
   }
 
-  update(id: number, updateTwaroomDto: UpdateTwaroomDto) {
-    return `This action updates a #${id} twaroom`;
+  public async add_message(id: string, message: TwaMessage) {
+    const updated = await this.TwaroomModel.updateOne(
+      { _id: id },
+      { $push: { messages: message } },
+    );
+    return { updated };
   }
 
   remove(id: number) {

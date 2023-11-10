@@ -1,18 +1,25 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { TwaMessage } from './twamessage.schema';
 
 export type TwaroomDocument = HydratedDocument<Twaroom>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Twaroom {
+  @Prop()
+  messages: TwaMessage[];
+
   @Prop()
   name: string;
 
   @Prop()
-  age: number;
+  media_story_id: string;
 
   @Prop()
-  breed: string;
+  createdAt?: Date;
+
+  @Prop()
+  updatedAt?: Date;
 }
 
 export const TwaroomSchema = SchemaFactory.createForClass(Twaroom);

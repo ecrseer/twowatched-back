@@ -11,7 +11,7 @@ import {
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({ cors: true })
-export class TwochatGateway
+export class TwaroomGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   afterInit(server: any) {
@@ -35,7 +35,7 @@ export class TwochatGateway
     console.log('🚀 ~ data:', data);
     const transformed = +data.abc * 2;
     client.send({ transformed });
-    console.log('🚀 ~ transformed:', transformed);
+    console.log('🚀 NEW GATEWAY~ transformed:', transformed);
     // Handle received message
     // this.server.emit('message', { transformed }); // Broadcast the message to all connected clients
   }
