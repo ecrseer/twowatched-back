@@ -9,11 +9,14 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { TwaroomService } from './twaroom.service';
 
 @WebSocketGateway({ cors: true })
 export class TwaroomGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  constructor(private twaroomService: TwaroomService) {}
+
   afterInit(server: any) {
     console.log('🚀 ~ afterInit ~ server:');
   }
@@ -35,7 +38,9 @@ export class TwaroomGateway
     console.log('🚀 ~ data:', data);
     const transformed = +data.abc * 2;
     client.send({ transformed });
-    console.log('🚀 NEW GATEWAY~ transformed:', transformed);
+    const all = this.twaroomService.findAll().then((data) => {
+      console.log('🚀 ~ all:', data);
+    });
     // Handle received message
     // this.server.emit('message', { transformed }); // Broadcast the message to all connected clients
   }

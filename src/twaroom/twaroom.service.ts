@@ -18,13 +18,12 @@ export class TwaroomService {
     return { result, created };
   }
 
-  findAll() {
-    return `This action returns all twaroom`;
+  public async findAll() {
+    return await this.TwaroomModel.find();
   }
 
   findOne(id: number) {
-    this.TwaroomModel.findOne({});
-    return `This action returns a #${id} twaroom`;
+    return this.TwaroomModel.findOne({ _id: id });
   }
 
   public async add_message(id: string, message: TwaMessage) {
