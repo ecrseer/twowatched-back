@@ -11,4 +11,13 @@ export declare class TwaroomGateway implements OnGatewayInit, OnGatewayConnectio
     handleMessage(data: {
         abc: number;
     }, client: Socket): void;
+    client_join_room(data: {
+        room_id: string;
+        sender_user_id: string;
+    }, client: Socket): void;
+    client_sent_message(user: {
+        room_id: string;
+        sender_user_id: string;
+        message: string;
+    }, client: Socket): void;
 }

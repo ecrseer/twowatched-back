@@ -40,11 +40,9 @@ export declare class TwaroomController {
     findAll(): Promise<(import("mongoose").Document<unknown, {}, import("./entities/twaroom.schema").Twaroom> & import("./entities/twaroom.schema").Twaroom & {
         _id: import("mongoose").Types.ObjectId;
     })[]>;
-    findOne(id: string): import("mongoose").Query<import("mongoose").Document<unknown, {}, import("./entities/twaroom.schema").Twaroom> & import("./entities/twaroom.schema").Twaroom & {
+    findOne(room_id: string): Promise<import("mongoose").Document<unknown, {}, import("./entities/twaroom.schema").Twaroom> & import("./entities/twaroom.schema").Twaroom & {
         _id: import("mongoose").Types.ObjectId;
-    }, import("mongoose").Document<unknown, {}, import("./entities/twaroom.schema").Twaroom> & import("./entities/twaroom.schema").Twaroom & {
-        _id: import("mongoose").Types.ObjectId;
-    }, {}, import("./entities/twaroom.schema").Twaroom, "findOne">;
+    }>;
     add_message(room_id: string, message: TwaMessage): Promise<{
         updated: import("mongoose").UpdateWriteOpResult;
     }>;

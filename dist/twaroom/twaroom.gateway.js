@@ -39,6 +39,17 @@ let TwaroomGateway = class TwaroomGateway {
             console.log('🚀 ~ all:', data);
         });
     }
+    client_join_room(data, client) {
+        console.log('🚀 ~ join room:', data);
+        client.join(data.room_id);
+    }
+    client_sent_message(user, client) {
+        this.twaroomService.add_message(user.room_id, {
+            content: user.message,
+            sender_user_id: user.sender_user_id,
+        });
+        client.to(user.room_id).emit('append_message', user);
+    }
 };
 exports.TwaroomGateway = TwaroomGateway;
 __decorate([
@@ -53,6 +64,22 @@ __decorate([
     __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", void 0)
 ], TwaroomGateway.prototype, "handleMessage", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('enter_room'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", void 0)
+], TwaroomGateway.prototype, "client_join_room", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('send_message'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", void 0)
+], TwaroomGateway.prototype, "client_sent_message", null);
 exports.TwaroomGateway = TwaroomGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ cors: true }),
     __metadata("design:paramtypes", [twaroom_service_1.TwaroomService])

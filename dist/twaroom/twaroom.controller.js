@@ -28,8 +28,8 @@ let TwaroomController = class TwaroomController {
     findAll() {
         return this.twaroomService.findAll();
     }
-    findOne(id) {
-        return this.twaroomService.findOne(+id);
+    async findOne(room_id) {
+        return await this.twaroomService.findOne(room_id);
     }
     add_message(room_id, message) {
         return this.twaroomService.add_message(room_id, message);
@@ -53,11 +53,11 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TwaroomController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)(':room_id'),
+    __param(0, (0, common_1.Param)('room_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], TwaroomController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':room_id'),

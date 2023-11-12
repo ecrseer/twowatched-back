@@ -30,11 +30,11 @@ let TwaroomService = class TwaroomService {
     async findAll() {
         return await this.TwaroomModel.find();
     }
-    findOne(id) {
-        return this.TwaroomModel.findOne({ _id: id });
+    async findOne(room_id) {
+        return await this.TwaroomModel.findOne({ _id: room_id }).exec();
     }
-    async add_message(id, message) {
-        const updated = await this.TwaroomModel.updateOne({ _id: id }, { $push: { messages: message } });
+    async add_message(room_id, message) {
+        const updated = await this.TwaroomModel.updateOne({ _id: room_id }, { $push: { messages: message } });
         return { updated };
     }
     remove(id) {

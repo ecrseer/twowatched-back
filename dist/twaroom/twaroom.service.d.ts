@@ -40,12 +40,10 @@ export declare class TwaroomService {
     findAll(): Promise<(import("mongoose").Document<unknown, {}, Twaroom> & Twaroom & {
         _id: import("mongoose").Types.ObjectId;
     })[]>;
-    findOne(id: number): import("mongoose").Query<import("mongoose").Document<unknown, {}, Twaroom> & Twaroom & {
+    findOne(room_id: string): Promise<import("mongoose").Document<unknown, {}, Twaroom> & Twaroom & {
         _id: import("mongoose").Types.ObjectId;
-    }, import("mongoose").Document<unknown, {}, Twaroom> & Twaroom & {
-        _id: import("mongoose").Types.ObjectId;
-    }, {}, Twaroom, "findOne">;
-    add_message(id: string, message: TwaMessage): Promise<{
+    }>;
+    add_message(room_id: string, message: TwaMessage): Promise<{
         updated: import("mongoose").UpdateWriteOpResult;
     }>;
     remove(id: number): string;

@@ -22,13 +22,13 @@ export class TwaroomService {
     return await this.TwaroomModel.find();
   }
 
-  findOne(id: number) {
-    return this.TwaroomModel.findOne({ _id: id });
+  public async findOne(room_id: string) {
+    return await this.TwaroomModel.findOne({ _id: room_id }).exec();
   }
 
-  public async add_message(id: string, message: TwaMessage) {
+  public async add_message(room_id: string, message: TwaMessage) {
     const updated = await this.TwaroomModel.updateOne(
-      { _id: id },
+      { _id: room_id },
       { $push: { messages: message } },
     );
     return { updated };

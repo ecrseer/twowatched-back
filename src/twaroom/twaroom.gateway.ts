@@ -44,4 +44,26 @@ export class TwaroomGateway
     // Handle received message
     // this.server.emit('message', { transformed }); // Broadcast the message to all connected clients
   }
+
+  @SubscribeMessage('enter_room')
+  client_join_room(
+    @MessageBody() data: { room_id: string; sender_user_id: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('🚀 ~ join room:', data);
+    client.join(data.room_id);
+  }
+
+  @SubscribeMessage('send_message')
+  client_sent_message(
+    @MessageBody()
+    user: { room_id: string; sender_user_id: string; message: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    this.twaroomService.add_message(user.room_id, {
+      content: user.message,
+      sender_user_id: user.sender_user_id,
+    });
+    client.to(user.room_id).emit('append_message', user);
+  }
 }

@@ -26,9 +26,9 @@ export class TwaroomController {
     return this.twaroomService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.twaroomService.findOne(+id);
+  @Get(':room_id')
+  async findOne(@Param('room_id') room_id: string) {
+    return await this.twaroomService.findOne(room_id);
   }
 
   @Patch(':room_id')
