@@ -17,12 +17,14 @@ const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const twaroom_service_1 = require("./twaroom.service");
 let TwaroomGateway = class TwaroomGateway {
+    twaroomService;
     constructor(twaroomService) {
         this.twaroomService = twaroomService;
     }
     afterInit(server) {
         console.log('🚀 ~ afterInit ~ server:');
     }
+    server;
     handleConnection(client, ...args) {
         console.log('connected');
     }

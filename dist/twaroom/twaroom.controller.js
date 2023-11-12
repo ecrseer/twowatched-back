@@ -18,6 +18,7 @@ const twaroom_service_1 = require("./twaroom.service");
 const create_twaroom_dto_1 = require("./dto/create-twaroom.dto");
 const twamessage_schema_1 = require("./entities/twamessage.schema");
 let TwaroomController = class TwaroomController {
+    twaroomService;
     constructor(twaroomService) {
         this.twaroomService = twaroomService;
     }

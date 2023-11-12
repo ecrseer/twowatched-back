@@ -18,6 +18,7 @@ const twaroom_schema_1 = require("./entities/twaroom.schema");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 let TwaroomService = class TwaroomService {
+    TwaroomModel;
     constructor(TwaroomModel) {
         this.TwaroomModel = TwaroomModel;
     }

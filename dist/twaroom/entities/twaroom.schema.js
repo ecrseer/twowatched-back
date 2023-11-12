@@ -12,6 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TwaroomSchema = exports.Twaroom = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 let Twaroom = class Twaroom {
+    messages;
+    name;
+    media_story_id;
+    createdAt;
+    updatedAt;
 };
 exports.Twaroom = Twaroom;
 __decorate([

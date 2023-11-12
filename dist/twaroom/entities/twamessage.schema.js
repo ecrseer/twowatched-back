@@ -12,6 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TwaMessageSchema = exports.TwaMessage = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 let TwaMessage = class TwaMessage {
+    content;
+    sender_user_id;
 };
 exports.TwaMessage = TwaMessage;
 __decorate([
