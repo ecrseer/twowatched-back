@@ -18,6 +18,7 @@ const socket_io_1 = require("socket.io");
 const twaroom_service_1 = require("./twaroom.service");
 let TwaroomGateway = class TwaroomGateway {
     twaroomService;
+    ROLEPLAY_WAIT_ROOM_PREFIX = `likes_movie_`;
     constructor(twaroomService) {
         this.twaroomService = twaroomService;
     }
@@ -50,6 +51,27 @@ let TwaroomGateway = class TwaroomGateway {
         });
         client.to(user.room_id).emit('append_message', user);
     }
+    client_enter_roleplay_notifications_room(dto, client) {
+        for (const movie of dto?.moviesList) {
+            this.enter_roleplay_room(movie, client);
+        }
+    }
+    enter_roleplay_room(movie, client) {
+        client.join(this.get_roleplay_room(movie));
+    }
+    client_request_roleplay_chat(dto, client) {
+        this.send_roleplay_room_request(dto.priority, client);
+    }
+    send_roleplay_room_request(movie, client) {
+        const room = this.get_roleplay_room(movie);
+        client
+            .to(room)
+            .emit('wants_movie_roleplay', { movie, client_id: client.id });
+    }
+    get_roleplay_room(movie) {
+        const room = `${this.ROLEPLAY_WAIT_ROOM_PREFIX}${movie.name || movie.title}`;
+        return room;
+    }
 };
 exports.TwaroomGateway = TwaroomGateway;
 __decorate([
@@ -80,6 +102,22 @@ __decorate([
     __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", void 0)
 ], TwaroomGateway.prototype, "client_sent_message", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('enter_roleplay_notifications_room'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", void 0)
+], TwaroomGateway.prototype, "client_enter_roleplay_notifications_room", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('request_roleplay_chat'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", void 0)
+], TwaroomGateway.prototype, "client_request_roleplay_chat", null);
 exports.TwaroomGateway = TwaroomGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ cors: true }),
     __metadata("design:paramtypes", [twaroom_service_1.TwaroomService])

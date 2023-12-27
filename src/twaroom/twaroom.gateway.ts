@@ -10,11 +10,13 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { TwaroomService } from './twaroom.service';
+import { iTwaMovie } from '../movies/entities/Tmdb';
 
 @WebSocketGateway({ cors: true })
 export class TwaroomGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  ROLEPLAY_WAIT_ROOM_PREFIX = `likes_movie_`;
   constructor(private twaroomService: TwaroomService) {}
 
   afterInit(server: any) {
@@ -65,5 +67,51 @@ export class TwaroomGateway
       sender_user_id: user.sender_user_id,
     });
     client.to(user.room_id).emit('append_message', user);
+  }
+
+  @SubscribeMessage('enter_roleplay_notifications_room')
+  client_enter_roleplay_notifications_room(
+    @MessageBody()
+    dto: {
+      moviesList: iTwaMovie[];
+    },
+    @ConnectedSocket() client: Socket,
+  ) {
+    for (const movie of dto?.moviesList) {
+      this.enter_roleplay_room(movie, client);
+    }
+  }
+  private enter_roleplay_room(movie: iTwaMovie, client: Socket) {
+    client.join(this.get_roleplay_room(movie));
+  }
+
+  @SubscribeMessage('request_roleplay_chat')
+  client_request_roleplay_chat(
+    @MessageBody()
+    dto: {
+      priority: iTwaMovie;
+      moviesList: iTwaMovie[];
+    },
+    @ConnectedSocket() client: Socket,
+  ) {
+    this.send_roleplay_room_request(dto.priority, client);
+    // for (const movie of dto.moviesList) {
+    //   this.send_roleplay_room_request(movie, client);
+    // }
+  }
+
+  private send_roleplay_room_request(movie: iTwaMovie, client: Socket) {
+    const room = this.get_roleplay_room(movie);
+    client
+      .to(room)
+      .emit('wants_movie_roleplay', { movie, client_id: client.id });
+  }
+
+  private get_roleplay_room(movie: iTwaMovie) {
+    const room = `${this.ROLEPLAY_WAIT_ROOM_PREFIX}${
+      movie.name || movie.title
+    }`;
+
+    return room;
   }
 }
