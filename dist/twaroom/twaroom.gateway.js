@@ -64,9 +64,12 @@ let TwaroomGateway = class TwaroomGateway {
     }
     send_roleplay_room_request(movie, client) {
         const room = this.get_roleplay_room(movie);
-        client
-            .to(room)
-            .emit('wants_movie_roleplay', { movie, client_id: client.id });
+        const notification = {
+            title: 'Someone wants to roleplay!',
+            description: `${new Date().getSeconds()} wants to roleplay ${movie.name || movie.title}!`,
+            type: 'info',
+        };
+        client.to(room).emit('wants_movie_roleplay', notification);
     }
     get_roleplay_room(movie) {
         const room = `${this.ROLEPLAY_WAIT_ROOM_PREFIX}${movie.name || movie.title}`;

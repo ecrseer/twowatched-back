@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TwaroomModule } from './twaroom/twaroom.module';
 import { MoviesModule } from './movies/movies.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { MoviesModule } from './movies/movies.module';
     MongooseModule.forRoot(process.env.MONGOURI),
     TwaroomModule,
     MoviesModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

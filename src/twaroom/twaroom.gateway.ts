@@ -11,6 +11,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { TwaroomService } from './twaroom.service';
 import { iTwaMovie } from '../movies/entities/Tmdb';
+import { iNotification } from '../notifications/entities/notification.entity';
 
 @WebSocketGateway({ cors: true })
 export class TwaroomGateway
@@ -102,9 +103,14 @@ export class TwaroomGateway
 
   private send_roleplay_room_request(movie: iTwaMovie, client: Socket) {
     const room = this.get_roleplay_room(movie);
-    client
-      .to(room)
-      .emit('wants_movie_roleplay', { movie, client_id: client.id });
+    const notification: iNotification = {
+      title: 'Someone wants to roleplay!',
+      description: `${new Date().getSeconds()} wants to roleplay ${
+        movie.name || movie.title
+      }!`,
+      type: 'info',
+    };
+    client.to(room).emit('wants_movie_roleplay', notification);
   }
 
   private get_roleplay_room(movie: iTwaMovie) {
