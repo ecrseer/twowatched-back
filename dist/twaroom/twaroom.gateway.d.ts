@@ -1,18 +1,22 @@
-import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit } from '@nestjs/websockets';
+import { OnGatewayInit } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { TwaroomService } from './twaroom.service';
 import { iTwaMovie } from '../movies/entities/Tmdb';
-export declare class TwaroomGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export declare class TwaroomGateway implements OnGatewayInit {
     private twaroomService;
     ROLEPLAY_WAIT_ROOM_PREFIX: string;
     constructor(twaroomService: TwaroomService);
-    afterInit(server: any): void;
     server: Server;
-    handleConnection(client: any, ...args: any[]): void;
-    handleDisconnect(client: any): void;
-    handleMessage(data: {
-        abc: number;
+    afterInit(server: any): void;
+    client_enter_roleplay_notifications_room(dto: {
+        moviesList: iTwaMovie[];
     }, client: Socket): void;
+    client_request_roleplay_chat(dto: {
+        priority: iTwaMovie;
+        moviesList: iTwaMovie[];
+    }, client: Socket): void;
+    private send_roleplay_room_request;
+    private get_roleplay_room;
     client_join_room(data: {
         room_id: string;
         sender_user_id: string;
@@ -22,14 +26,4 @@ export declare class TwaroomGateway implements OnGatewayInit, OnGatewayConnectio
         sender_user_id: string;
         message: string;
     }, client: Socket): void;
-    client_enter_roleplay_notifications_room(dto: {
-        moviesList: iTwaMovie[];
-    }, client: Socket): void;
-    private enter_roleplay_room;
-    client_request_roleplay_chat(dto: {
-        priority: iTwaMovie;
-        moviesList: iTwaMovie[];
-    }, client: Socket): void;
-    private send_roleplay_room_request;
-    private get_roleplay_room;
 }
