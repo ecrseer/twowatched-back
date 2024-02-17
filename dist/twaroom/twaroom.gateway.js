@@ -22,12 +22,14 @@ let TwaroomGateway = class TwaroomGateway {
     constructor(twaroomService) {
         this.twaroomService = twaroomService;
     }
+    handleDisconnect(client) {
+        console.log('🚀 ~ handleDisconnect ~ client:', client?.rooms);
+    }
     server;
     afterInit(server) {
         console.log('🚀 ~ afterInit ~ server:', { server });
     }
     client_enter_roleplay_notifications_room(dto, client) {
-        console.log('🚀 ~ client_enter_roleplay_notifications_room:', { dto });
         for (const movie of dto?.moviesList) {
             client.join(this.get_roleplay_room(movie));
         }
@@ -37,9 +39,10 @@ let TwaroomGateway = class TwaroomGateway {
     }
     send_roleplay_room_request(movie, client) {
         const room = this.get_roleplay_room(movie);
+        const MOCK_USER_ID = new Date().getSeconds();
         const notification = {
             title: 'Someone wants to roleplay!',
-            description: `${new Date().getSeconds()} wants to roleplay ${movie.name || movie.title}!`,
+            description: `${MOCK_USER_ID} wants to roleplay ${movie.name || movie.title}!`,
             type: 'info',
         };
         client.to(room).emit('receive_request_roleplay_chat', notification);
@@ -49,10 +52,11 @@ let TwaroomGateway = class TwaroomGateway {
         return room;
     }
     client_join_room(data, client) {
-        console.log('🚀 ~ join room:', data);
         client.join(data.room_id);
+        console.log('🚀 ~ client join rooms', client.rooms);
     }
     client_sent_message(user, client) {
+        console.log('🚀 ~ ent_message:', client.rooms);
         this.twaroomService.add_message(user.room_id, {
             content: user.message,
             sender_user_id: user.sender_user_id,

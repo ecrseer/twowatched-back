@@ -1,11 +1,12 @@
-import { OnGatewayInit } from '@nestjs/websockets';
+import { OnGatewayDisconnect, OnGatewayInit } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { TwaroomService } from './twaroom.service';
 import { iTwaMovie } from '../movies/entities/Tmdb';
-export declare class TwaroomGateway implements OnGatewayInit {
+export declare class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
     private twaroomService;
     ROLEPLAY_WAIT_ROOM_PREFIX: string;
     constructor(twaroomService: TwaroomService);
+    handleDisconnect(client: any): void;
     server: Server;
     afterInit(server: any): void;
     client_enter_roleplay_notifications_room(dto: {

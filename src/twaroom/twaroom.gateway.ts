@@ -14,9 +14,12 @@ import { iTwaMovie } from '../movies/entities/Tmdb';
 import { iNotification } from '../notifications/entities/notification.entity';
 
 @WebSocketGateway({ cors: true })
-export class TwaroomGateway implements OnGatewayInit {
+export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
   ROLEPLAY_WAIT_ROOM_PREFIX = `likes_movie_`;
   constructor(private twaroomService: TwaroomService) {}
+  handleDisconnect(client: any) {
+    console.log('🚀 ~ handleDisconnect ~ client:', client?.rooms);
+  }
   @WebSocketServer()
   server: Server;
 
@@ -32,7 +35,6 @@ export class TwaroomGateway implements OnGatewayInit {
     },
     @ConnectedSocket() client: Socket,
   ) {
-    console.log('🚀 ~ client_enter_roleplay_notifications_room:', { dto });
     for (const movie of dto?.moviesList) {
       client.join(this.get_roleplay_room(movie));
     }
@@ -52,9 +54,10 @@ export class TwaroomGateway implements OnGatewayInit {
 
   private send_roleplay_room_request(movie: iTwaMovie, client: Socket) {
     const room = this.get_roleplay_room(movie);
+    const MOCK_USER_ID = new Date().getSeconds();
     const notification: iNotification = {
       title: 'Someone wants to roleplay!',
-      description: `${new Date().getSeconds()} wants to roleplay ${
+      description: `${MOCK_USER_ID} wants to roleplay ${
         movie.name || movie.title
       }!`,
       type: 'info',
@@ -74,8 +77,9 @@ export class TwaroomGateway implements OnGatewayInit {
     @MessageBody() data: { room_id: string; sender_user_id: string },
     @ConnectedSocket() client: Socket,
   ) {
-    console.log('🚀 ~ join room:', data);
+    // console.log('🚀 ~ join room:', data);
     client.join(data.room_id);
+    console.log('🚀 ~ client join rooms', client.rooms);
   }
 
   @SubscribeMessage('send_message')
@@ -84,6 +88,7 @@ export class TwaroomGateway implements OnGatewayInit {
     user: { room_id: string; sender_user_id: string; message: string },
     @ConnectedSocket() client: Socket,
   ) {
+    console.log('🚀 ~ ent_message:', client.rooms);
     this.twaroomService.add_message(user.room_id, {
       content: user.message,
       sender_user_id: user.sender_user_id,
