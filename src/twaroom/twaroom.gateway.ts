@@ -38,6 +38,15 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
     for (const movie of dto?.moviesList) {
       client.join(this.get_roleplay_room(movie));
     }
+    console.log('🚀 ~ client:', client.rooms);
+  }
+
+  private get_roleplay_room(movie: iTwaMovie) {
+    const room = `${this.ROLEPLAY_WAIT_ROOM_PREFIX}${
+      movie.name || movie.title
+    }`;
+
+    return room;
   }
 
   @SubscribeMessage('request_roleplay_chat')
@@ -65,32 +74,15 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
     client.to(room).emit('receive_request_roleplay_chat', notification);
   }
 
-  private get_roleplay_room(movie: iTwaMovie) {
-    const room = `${this.ROLEPLAY_WAIT_ROOM_PREFIX}${
-      movie.name || movie.title
-    }`;
-
-    return room;
-  }
-  @SubscribeMessage('enter_room')
-  client_join_room(
-    @MessageBody() data: { room_id: string; sender_user_id: string },
-    @ConnectedSocket() client: Socket,
-  ) {
-    // console.log('🚀 ~ join room:', data);
-    client.join(data.room_id);
-    console.log('🚀 ~ client join rooms', client.rooms);
-  }
-
   @SubscribeMessage('send_message')
   client_sent_message(
     @MessageBody()
-    user: { room_id: string; sender_user_id: string; message: string },
+    user: { room_id: string; sender_user_id: string; content: string },
     @ConnectedSocket() client: Socket,
   ) {
     console.log('🚀 ~ ent_message:', client.rooms);
     this.twaroomService.add_message(user.room_id, {
-      content: user.message,
+      content: user.content,
       sender_user_id: user.sender_user_id,
     });
     client.to(user.room_id).emit('append_message', user);
