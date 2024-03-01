@@ -74,6 +74,17 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
     client.to(room).emit('receive_request_roleplay_chat', notification);
   }
 
+  @SubscribeMessage('enter_room')
+  client_enter_room(
+    @MessageBody()
+    dto: {
+      room_id: string;
+    },
+    @ConnectedSocket() client: Socket,
+  ) {
+    client.join(dto.room_id);
+  }
+
   @SubscribeMessage('send_message')
   client_sent_message(
     @MessageBody()
