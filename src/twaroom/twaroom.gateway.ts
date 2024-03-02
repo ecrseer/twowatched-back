@@ -1,7 +1,6 @@
 import {
   ConnectedSocket,
   MessageBody,
-  OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
   SubscribeMessage,
@@ -24,21 +23,22 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
   server: Server;
 
   afterInit(server: any) {
-    console.log('🚀 ~ afterInit ~ server:', { server });
+    // console.log('🚀 ~ afterInit ~ server:', { server });
   }
 
   @SubscribeMessage('enter_roleplay_notifications_room')
   client_enter_roleplay_notifications_room(
+    @ConnectedSocket() client: Socket,
     @MessageBody()
     dto: {
       moviesList: iTwaMovie[];
     },
-    @ConnectedSocket() client: Socket,
   ) {
     for (const movie of dto?.moviesList) {
       client.join(this.get_roleplay_room(movie));
     }
-    console.log('🚀 ~ client:', client.rooms);
+
+    return Array.from(client.rooms);
   }
 
   private get_roleplay_room(movie: iTwaMovie) {

@@ -18,7 +18,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "vercel:deploy":"npm run build && vercel --prod"
+    "mtest": "mocha src/**/*.spec.ts",
+    "vercel:deploy": "npm run build && vercel --prod"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -44,6 +45,7 @@
     "@nestjs/testing": "^10.0.0",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
+    "@types/mocha": "^10.0.6",
     "@types/node": "^20.3.1",
     "@types/supertest": "^2.0.12",
     "@types/ws": "8.5.5",
@@ -53,7 +55,9 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "jest": "^29.5.0",
+    "mocha": "^10.3.0",
     "prettier": "^3.0.0",
+    "socket.io-client": "^4.7.4",
     "source-map-support": "^0.5.21",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
@@ -78,5 +82,14 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "mocha": {
+    "require": [
+      "ts-node/register",
+      "tsconfig-paths/register",
+      "node_modules/reflect-metadata/Reflect.js",
+      "src/hooks/mocha-init-hook.ts"
+    ],
+    "exit": true
   }
 }
