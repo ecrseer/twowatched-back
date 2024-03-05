@@ -49,6 +49,17 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
     return room;
   }
 
+  @SubscribeMessage('enter_room')
+  client_enter_room(
+    @MessageBody()
+    dto: {
+      room_id: string;
+    },
+    @ConnectedSocket() client: Socket,
+  ) {
+    client.join(dto.room_id);
+  }
+
   @SubscribeMessage('request_roleplay_chat')
   client_request_roleplay_chat(
     @MessageBody()
@@ -74,24 +85,12 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
     client.to(room).emit('receive_request_roleplay_chat', notification);
   }
 
-  @SubscribeMessage('enter_room')
-  client_enter_room(
-    @MessageBody()
-    dto: {
-      room_id: string;
-    },
-    @ConnectedSocket() client: Socket,
-  ) {
-    client.join(dto.room_id);
-  }
-
   @SubscribeMessage('send_message')
   client_sent_message(
     @MessageBody()
     user: { room_id: string; sender_user_id: string; content: string },
     @ConnectedSocket() client: Socket,
   ) {
-    console.log('🚀 ~ ent_message:', client.rooms);
     this.twaroomService.add_message(user.room_id, {
       content: user.content,
       sender_user_id: user.sender_user_id,

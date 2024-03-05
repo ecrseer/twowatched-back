@@ -11,16 +11,16 @@ export declare class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnec
     afterInit(server: any): void;
     client_enter_roleplay_notifications_room(client: Socket, dto: {
         moviesList: iTwaMovie[];
-    }): IterableIterator<string>;
+    }): string[];
     private get_roleplay_room;
+    client_enter_room(dto: {
+        room_id: string;
+    }, client: Socket): void;
     client_request_roleplay_chat(dto: {
         priority: iTwaMovie;
         moviesList: iTwaMovie[];
     }, client: Socket): void;
     private send_roleplay_room_request;
-    client_enter_room(dto: {
-        room_id: string;
-    }, client: Socket): void;
     client_sent_message(user: {
         room_id: string;
         sender_user_id: string;
