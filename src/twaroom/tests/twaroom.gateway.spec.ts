@@ -1,35 +1,10 @@
-import { Test } from '@nestjs/testing';
-
 import { INestApplication } from '@nestjs/common';
 import { Socket, io } from 'socket.io-client';
 import { TwaroomGateway } from '../twaroom.gateway';
 // import { TwaroomService } from '../twaroom.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
-import { TwaroomModule } from '../twaroom.module';
-import { MoviesModule } from '../../movies/movies.module';
-import { NotificationsModule } from '../../notifications/notifications.module';
-import { AppController } from '../../app.controller';
-import { AppService } from '../../app.service';
-import {
-  client_enter_roleplay_notifications_room,
-  mock_create_room,
-} from './data-mocks';
 
-export async function createTestNestApp(): Promise<INestApplication> {
-  const testingModule = await Test.createTestingModule({
-    imports: [
-      ConfigModule.forRoot(),
-      MongooseModule.forRoot(process.env.MONGOURI),
-      TwaroomModule,
-      MoviesModule,
-      NotificationsModule,
-    ],
-    controllers: [AppController],
-    providers: [AppService],
-  }).compile();
-  return testingModule.createNestApplication();
-}
+import { client_enter_roleplay_notifications_room } from './data-mocks';
+import { createTestNestApp } from './utils';
 
 describe('TwaroomGateway', () => {
   let gateway: TwaroomGateway;
@@ -38,10 +13,8 @@ describe('TwaroomGateway', () => {
   let ioClient2: Socket;
 
   beforeEach(async () => {
-    // Instantiate the app
-
-    app = await createTestNestApp();
-    // Get the gateway instance from the app instance
+    const { nestApp } = await createTestNestApp();
+    app = nestApp;
     gateway = app.get<TwaroomGateway>(TwaroomGateway);
     // Create a new client that will interact with the gateway
     ioClient = io('http://localhost:3043', {

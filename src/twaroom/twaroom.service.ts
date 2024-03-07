@@ -14,7 +14,7 @@ export class TwaroomService {
 
   async create(createTwaroomDto: CreateTwaroomDto) {
     const created = new this.TwaroomModel(createTwaroomDto);
-    const result = created.save();
+    const result = await created.save();
     return { result, created };
   }
 
