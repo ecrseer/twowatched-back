@@ -22,10 +22,15 @@ let TwaroomService = class TwaroomService {
     constructor(TwaroomModel) {
         this.TwaroomModel = TwaroomModel;
     }
-    async create(createTwaroomDto) {
-        const created = new this.TwaroomModel(createTwaroomDto);
-        const result = created.save();
-        return { result, created };
+    async create(createRoomDto) {
+        const MOCK_ROOM = {
+            name: `${new Date().toLocaleDateString()}-name`,
+            media_story_id: `${new Date().toLocaleDateString()}-slime`,
+            messages: [],
+        };
+        const created = new this.TwaroomModel(createRoomDto || MOCK_ROOM);
+        const room = await created.save();
+        return { room, created };
     }
     async findAll() {
         return await this.TwaroomModel.find();

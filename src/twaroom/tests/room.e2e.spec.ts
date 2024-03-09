@@ -14,12 +14,11 @@ describe('TwaroomService', () => {
   });
 
   test('should be able to create', async () => {
-    // expect(service).toBeDefined();
-    // const result = await service.create(mock_create_room);
-    // expect(result?.created).toBeDefined();
-    // console.log('~☠️ ~ test ~ result?.created:', result?.created);
-    
-
+    expect(service).toBeDefined();
+    const result = await service.create(mock_create_room);
+    expect(result?.created).toBeDefined();
+    console.log('~☠️ ~ test ~ result?.created:', result?.created);
+    mongoose.connection.close();
   });
   afterEach(async () => {
     mongoose.connection.close();

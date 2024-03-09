@@ -11,6 +11,7 @@ import { Server, Socket } from 'socket.io';
 import { TwaroomService } from './twaroom.service';
 import { iTwaMovie } from '../movies/entities/Tmdb';
 import { iNotification } from '../notifications/entities/notification.entity';
+import { randomId } from '../utils';
 
 @WebSocketGateway({ cors: true })
 export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
@@ -34,17 +35,24 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
       moviesList: iTwaMovie[];
     },
   ) {
-    for (const movie of dto?.moviesList) {
-      client.join(this.get_roleplay_room(movie));
+    for (const movie of dto.moviesList) {
+      client.join(this.roleplay_room_name(movie));
     }
 
     return Array.from(client.rooms);
   }
 
-  private get_roleplay_room(movie: iTwaMovie) {
+  private roleplay_room_name(movie: iTwaMovie) {
     const room = `${this.ROLEPLAY_WAIT_ROOM_PREFIX}${
       movie.name || movie.title
     }`;
+
+    return room;
+  }
+  private roleplay_room_pool_name(movie: iTwaMovie) {
+    const room = `${this.ROLEPLAY_WAIT_ROOM_PREFIX}${
+      movie.name || movie.title
+    }_pool_${randomId()}`;
 
     return room;
   }
@@ -72,8 +80,12 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
     this.send_roleplay_room_request(dto.priority, client);
   }
 
-  private send_roleplay_room_request(movie: iTwaMovie, client: Socket) {
-    const room = this.get_roleplay_room(movie);
+  private get_client_room_pools(client: Socket) {
+    return Array.from(client.rooms).filter((room) => /_pool_/gi.test(room));
+  }
+
+  private async send_roleplay_room_request(movie: iTwaMovie, client: Socket) {
+    const room = this.roleplay_room_name(movie);
     const MOCK_USER_ID = new Date().getSeconds();
     const notification: iNotification = {
       title: 'Someone wants to roleplay!',
@@ -83,6 +95,29 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
       type: 'info',
     };
     client.to(room).emit('receive_request_roleplay_chat', notification);
+    // client.leave(all_room_polls);
+    const roleplay_notification_acceptance_room =
+      this.roleplay_room_pool_name(movie);
+    console.log(
+      '~☠️ ~ TwaroomGateway ~ send_roleplay_room_request ~ roleplay_notification_acceptance_room:',
+      roleplay_notification_acceptance_room,
+    );
+    client.join(roleplay_notification_acceptance_room);
+    return roleplay_notification_acceptance_room;
+  }
+
+  @SubscribeMessage('accept_roleplay_room_request')
+  public async client_accept_roleplay_room_request(
+    @ConnectedSocket()
+    client: Socket,
+    movie?: iTwaMovie,
+  ) {
+    const pools = this.get_client_room_pools(client);
+    const roleplay_notification_acceptance_room =
+      this.roleplay_room_pool_name(movie);
+    console.log('~☠️ ~ TwaroomGateway ~ pools:', { all: client.rooms, pools });
+    const { room } = await this.twaroomService.create();
+    client.to(pools[0]).emit('accepted_roleplay_enter_room', room);
   }
 
   @SubscribeMessage('send_message')

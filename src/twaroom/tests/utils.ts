@@ -8,18 +8,11 @@ import { MoviesModule } from '../../movies/movies.module';
 import { AppController } from '../../app.controller';
 import { AppService } from '../../app.service';
 import { NotificationsModule } from '../../notifications/notifications.module';
+import { AppModule } from '../../app.module';
 
 export async function createTestNestApp() {
   const testingModule = await Test.createTestingModule({
-    imports: [
-      ConfigModule.forRoot(),
-      MongooseModule.forRoot(process.env.MONGOURI),
-      TwaroomModule,
-      MoviesModule,
-      NotificationsModule,
-    ],
-    controllers: [AppController],
-    providers: [AppService],
+    imports: [AppModule],
   }).compile();
 
   return {

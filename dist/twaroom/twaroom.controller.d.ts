@@ -30,9 +30,9 @@ export declare class TwaroomController {
     private readonly twaroomService;
     constructor(twaroomService: TwaroomService);
     create(createTwaroomDto: CreateTwaroomDto): Promise<{
-        result: Promise<import("mongoose").Document<unknown, {}, import("./entities/twaroom.schema").Twaroom> & import("./entities/twaroom.schema").Twaroom & {
+        room: import("mongoose").Document<unknown, {}, import("./entities/twaroom.schema").Twaroom> & import("./entities/twaroom.schema").Twaroom & {
             _id: import("mongoose").Types.ObjectId;
-        }>;
+        };
         created: import("mongoose").Document<unknown, {}, import("./entities/twaroom.schema").Twaroom> & import("./entities/twaroom.schema").Twaroom & {
             _id: import("mongoose").Types.ObjectId;
         };

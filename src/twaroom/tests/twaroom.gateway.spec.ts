@@ -47,15 +47,16 @@ describe('TwaroomGateway', () => {
         client_enter_roleplay_notifications_room.payload,
         (rooms: string[]) => {
           if (!rooms || rooms.length < 2) {
-            reject('No rooms were joined');
+            reject(new Error('No rooms were joined'));
           }
           resolve();
         },
       );
     });
   }
+
   async function test_request_roleplay_chat() {
-    return await new Promise<void>((resolve, rejects) => {
+    return await new Promise<void>((resolve, reject) => {
       ioClient2.on('receive_request_roleplay_chat', (notification: any) => {
         console.log('~☠️ ~ ioClient2.on ~ notification:', notification);
         resolve();
@@ -66,7 +67,7 @@ describe('TwaroomGateway', () => {
           client_enter_roleplay_notifications_room.payload.moviesList[0],
       });
 
-      rejects();
+      reject(new Error('No response from server')); // Fix: Replace the rejection reason with an instance of the Error class.
     });
   }
 
@@ -83,6 +84,24 @@ describe('TwaroomGateway', () => {
   it('should client_enter_roleplay_notifications_room', async () => {
     ioClient.connect();
     await test_enter_room(ioClient);
+    ioClient.disconnect();
+  });
+  it('should pool for roleplay group chat', async () => {
+    ioClient.connect();
+    await test_enter_room(ioClient, 'bob1');
+
+    ioClient2.connect();
+    await test_enter_room(ioClient2, 'jane2');
+
+    ioClient2.on('receive_request_roleplay_chat', (notification: any) => {
+      
+    });
+
+    ioClient.emit('request_roleplay_chat', {
+      priority: client_enter_roleplay_notifications_room.payload.moviesList[0],
+      moviesList: client_enter_roleplay_notifications_room.payload.moviesList,
+    });
+
     ioClient.disconnect();
   });
 

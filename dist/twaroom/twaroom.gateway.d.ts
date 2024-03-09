@@ -12,7 +12,8 @@ export declare class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnec
     client_enter_roleplay_notifications_room(client: Socket, dto: {
         moviesList: iTwaMovie[];
     }): string[];
-    private get_roleplay_room;
+    private roleplay_room_name;
+    private roleplay_room_pool_name;
     client_enter_room(dto: {
         room_id: string;
     }, client: Socket): void;
@@ -20,7 +21,9 @@ export declare class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnec
         priority: iTwaMovie;
         moviesList: iTwaMovie[];
     }, client: Socket): void;
+    private get_client_room_pools;
     private send_roleplay_room_request;
+    client_accept_roleplay_room_request(client: Socket, movie?: iTwaMovie): Promise<void>;
     client_sent_message(user: {
         room_id: string;
         sender_user_id: string;

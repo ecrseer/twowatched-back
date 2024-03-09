@@ -29,10 +29,10 @@ import { TwaMessage } from './entities/twamessage.schema';
 export declare class TwaroomService {
     private TwaroomModel;
     constructor(TwaroomModel: Model<Twaroom>);
-    create(createTwaroomDto: CreateTwaroomDto): Promise<{
-        result: Promise<import("mongoose").Document<unknown, {}, Twaroom> & Twaroom & {
+    create(createRoomDto?: CreateTwaroomDto): Promise<{
+        room: import("mongoose").Document<unknown, {}, Twaroom> & Twaroom & {
             _id: import("mongoose").Types.ObjectId;
-        }>;
+        };
         created: import("mongoose").Document<unknown, {}, Twaroom> & Twaroom & {
             _id: import("mongoose").Types.ObjectId;
         };

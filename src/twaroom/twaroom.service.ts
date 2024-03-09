@@ -12,10 +12,15 @@ export class TwaroomService {
     @InjectModel(Twaroom.name) private TwaroomModel: Model<Twaroom>,
   ) {}
 
-  async create(createTwaroomDto: CreateTwaroomDto) {
-    const created = new this.TwaroomModel(createTwaroomDto);
-    const result = await created.save();
-    return { result, created };
+  async create(createRoomDto?: CreateTwaroomDto) {
+    const MOCK_ROOM: Omit<Twaroom, '_id'> = {
+      name: `${new Date().toLocaleDateString()}-name`,
+      media_story_id: `${new Date().toLocaleDateString()}-slime`,
+      messages: [],
+    };
+    const created = new this.TwaroomModel(createRoomDto || MOCK_ROOM);
+    const room = await created.save();
+    return { room, created };
   }
 
   public async findAll() {
