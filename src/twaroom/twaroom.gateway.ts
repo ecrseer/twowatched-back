@@ -18,7 +18,8 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
   ROLEPLAY_WAIT_ROOM_PREFIX = `likes_movie_`;
   constructor(private twaroomService: TwaroomService) {}
   handleDisconnect(client: any) {
-    console.log('🚀 ~ handleDisconnect ~ client:', client?.rooms);
+    if (process.env.IS_TESTING) return;
+    console.log('handleDisconnect:', client?.rooms);
   }
   @WebSocketServer()
   server: Server;
@@ -81,10 +82,6 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
   }
 
   private async send_roleplay_room_request(movie: iTwaMovie, client: Socket) {
-    console.log(
-      '~☠️ ~ TwaroomGateway ~ send_roleplay_room_request ~ movie:',
-      movie,
-    );
     const room = this.roleplay_room_name(movie);
     const MOCK_USER_ID = new Date().getSeconds();
     const notification: iNotification = {

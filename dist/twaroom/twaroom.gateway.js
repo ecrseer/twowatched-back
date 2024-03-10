@@ -23,7 +23,9 @@ let TwaroomGateway = class TwaroomGateway {
         this.twaroomService = twaroomService;
     }
     handleDisconnect(client) {
-        console.log('🚀 ~ handleDisconnect ~ client:', client?.rooms);
+        if (process.env.IS_TESTING)
+            return;
+        console.log('handleDisconnect:', client?.rooms);
     }
     server;
     afterInit(server) {

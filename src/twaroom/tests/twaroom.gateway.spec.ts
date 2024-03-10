@@ -27,6 +27,7 @@ describe('TwaroomGateway', () => {
     });
 
     app.listen(3043);
+    process.env.IS_TESTING = 'true';
   });
 
   afterEach(async () => {
@@ -37,9 +38,6 @@ describe('TwaroomGateway', () => {
     ioClient2.disconnect();
   });
 
-  it('should be defined', () => {
-    expect(gateway).toBeDefined();
-  });
   async function test_enter_room(client: Socket, name?: string) {
     return await new Promise<void>((resolve, reject) => {
       client.emit(
@@ -73,8 +71,8 @@ describe('TwaroomGateway', () => {
 
   it('should get_roleplay_room prefix', async () => {
     ioClient.connect();
-    // await test_enter_room();
-    const room_name = gateway['get_roleplay_room'](
+
+    const room_name = gateway['roleplay_room_name'](
       client_enter_roleplay_notifications_room.payload.moviesList[0],
     );
     expect(room_name.length).toBeGreaterThan(3);
@@ -93,16 +91,25 @@ describe('TwaroomGateway', () => {
     ioClient2.connect();
     await test_enter_room(ioClient2, 'jane2');
 
-    ioClient2.on('receive_request_roleplay_chat', (notification: any) => {
-      
-    });
+    await new Promise<void>((resolve, reject) => {
+      ioClient2.on(
+        'receive_request_roleplay_chat',
+        (notificationAndMovie: any) => {
+          if (!notificationAndMovie?.movie?.title) {
+            reject(new Error('No response from server'));
+          }
+          resolve();
+          ioClient.disconnect();
+          ioClient2.disconnect();
+        },
+      );
 
-    ioClient.emit('request_roleplay_chat', {
-      priority: client_enter_roleplay_notifications_room.payload.moviesList[0],
-      moviesList: client_enter_roleplay_notifications_room.payload.moviesList,
+      ioClient.emit('request_roleplay_chat', {
+        priority:
+          client_enter_roleplay_notifications_room.payload.moviesList[0],
+        moviesList: client_enter_roleplay_notifications_room.payload.moviesList,
+      });
     });
-
-    ioClient.disconnect();
   });
 
   it('should enter room and chat', async () => {
@@ -112,5 +119,6 @@ describe('TwaroomGateway', () => {
     await test_enter_room(ioClient2, 'jane2');
     // await test_request_roleplay_chat();
     ioClient.disconnect();
+    ioClient2.disconnect();
   });
 });
