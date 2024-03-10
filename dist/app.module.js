@@ -14,7 +14,7 @@ const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const twaroom_module_1 = require("./twaroom/twaroom.module");
 const movies_module_1 = require("./movies/movies.module");
-const notifications_module_1 = require("./notifications/notifications.module");
+const roleplay_notification_module_1 = require("./roleplay-notification/roleplay-notification.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -25,7 +25,7 @@ exports.AppModule = AppModule = __decorate([
             mongoose_1.MongooseModule.forRoot(process.env.MONGOURI),
             twaroom_module_1.TwaroomModule,
             movies_module_1.MoviesModule,
-            notifications_module_1.NotificationsModule,
+            roleplay_notification_module_1.RoleplayNotificationModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

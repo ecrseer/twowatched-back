@@ -10,8 +10,8 @@ import {
 import { Server, Socket } from 'socket.io';
 import { TwaroomService } from './twaroom.service';
 import { iTwaMovie } from '../movies/entities/Tmdb';
-import { iNotification } from '../notifications/entities/notification.entity';
-import { randomId } from '../utils';
+
+import { iNotification, randomId } from '../utils';
 
 @WebSocketGateway({ cors: true })
 export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
@@ -49,10 +49,10 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
 
     return room;
   }
-  private roleplay_room_pool_name(movie: iTwaMovie) {
+  private roleplay_room_acceptance_name(movie: iTwaMovie) {
     const room = `${this.ROLEPLAY_WAIT_ROOM_PREFIX}${
       movie.name || movie.title
-    }_pool_${randomId()}`;
+    }_pool_`;
 
     return room;
   }
@@ -80,11 +80,11 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
     this.send_roleplay_room_request(dto.priority, client);
   }
 
-  private get_client_room_pools(client: Socket) {
-    return Array.from(client.rooms).filter((room) => /_pool_/gi.test(room));
-  }
-
   private async send_roleplay_room_request(movie: iTwaMovie, client: Socket) {
+    console.log(
+      '~☠️ ~ TwaroomGateway ~ send_roleplay_room_request ~ movie:',
+      movie,
+    );
     const room = this.roleplay_room_name(movie);
     const MOCK_USER_ID = new Date().getSeconds();
     const notification: iNotification = {
@@ -94,30 +94,30 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
       }!`,
       type: 'info',
     };
-    client.to(room).emit('receive_request_roleplay_chat', notification);
+
+    client
+      .to(room)
+      .emit('receive_request_roleplay_chat', { notification, movie });
     // client.leave(all_room_polls);
-    const roleplay_notification_acceptance_room =
-      this.roleplay_room_pool_name(movie);
-    console.log(
-      '~☠️ ~ TwaroomGateway ~ send_roleplay_room_request ~ roleplay_notification_acceptance_room:',
-      roleplay_notification_acceptance_room,
-    );
-    client.join(roleplay_notification_acceptance_room);
-    return roleplay_notification_acceptance_room;
+
+    client.join(this.roleplay_room_acceptance_name(movie));
+  }
+
+  private get_client_room_pools(client: Socket) {
+    return Array.from(client.rooms).filter((room) => /_pool_/gi.test(room));
   }
 
   @SubscribeMessage('accept_roleplay_room_request')
   public async client_accept_roleplay_room_request(
+    @MessageBody() movie: iTwaMovie,
     @ConnectedSocket()
     client: Socket,
-    movie?: iTwaMovie,
   ) {
-    const pools = this.get_client_room_pools(client);
-    const roleplay_notification_acceptance_room =
-      this.roleplay_room_pool_name(movie);
-    console.log('~☠️ ~ TwaroomGateway ~ pools:', { all: client.rooms, pools });
+    const acceptance_room = this.roleplay_room_acceptance_name(movie);
+    client.join(acceptance_room);
     const { room } = await this.twaroomService.create();
-    client.to(pools[0]).emit('accepted_roleplay_enter_room', room);
+    client.in(acceptance_room).emit('accepted_roleplay_enter_room', room);
+    client.emit('accepted_roleplay_enter_room', room);
   }
 
   @SubscribeMessage('send_message')

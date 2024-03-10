@@ -16,7 +16,6 @@ exports.TwaroomGateway = void 0;
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const twaroom_service_1 = require("./twaroom.service");
-const utils_1 = require("../utils");
 let TwaroomGateway = class TwaroomGateway {
     twaroomService;
     ROLEPLAY_WAIT_ROOM_PREFIX = `likes_movie_`;
@@ -39,8 +38,8 @@ let TwaroomGateway = class TwaroomGateway {
         const room = `${this.ROLEPLAY_WAIT_ROOM_PREFIX}${movie.name || movie.title}`;
         return room;
     }
-    roleplay_room_pool_name(movie) {
-        const room = `${this.ROLEPLAY_WAIT_ROOM_PREFIX}${movie.name || movie.title}_pool_${(0, utils_1.randomId)()}`;
+    roleplay_room_acceptance_name(movie) {
+        const room = `${this.ROLEPLAY_WAIT_ROOM_PREFIX}${movie.name || movie.title}_pool_`;
         return room;
     }
     client_enter_room(dto, client) {
@@ -49,10 +48,8 @@ let TwaroomGateway = class TwaroomGateway {
     client_request_roleplay_chat(dto, client) {
         this.send_roleplay_room_request(dto.priority, client);
     }
-    get_client_room_pools(client) {
-        return Array.from(client.rooms).filter((room) => /_pool_/gi.test(room));
-    }
     async send_roleplay_room_request(movie, client) {
+        console.log('~☠️ ~ TwaroomGateway ~ send_roleplay_room_request ~ movie:', movie);
         const room = this.roleplay_room_name(movie);
         const MOCK_USER_ID = new Date().getSeconds();
         const notification = {
@@ -60,18 +57,20 @@ let TwaroomGateway = class TwaroomGateway {
             description: `${MOCK_USER_ID} wants to roleplay ${movie.name || movie.title}!`,
             type: 'info',
         };
-        client.to(room).emit('receive_request_roleplay_chat', notification);
-        const roleplay_notification_acceptance_room = this.roleplay_room_pool_name(movie);
-        console.log('~☠️ ~ TwaroomGateway ~ send_roleplay_room_request ~ roleplay_notification_acceptance_room:', roleplay_notification_acceptance_room);
-        client.join(roleplay_notification_acceptance_room);
-        return roleplay_notification_acceptance_room;
+        client
+            .to(room)
+            .emit('receive_request_roleplay_chat', { notification, movie });
+        client.join(this.roleplay_room_acceptance_name(movie));
     }
-    async client_accept_roleplay_room_request(client, movie) {
-        const pools = this.get_client_room_pools(client);
-        const roleplay_notification_acceptance_room = this.roleplay_room_pool_name(movie);
-        console.log('~☠️ ~ TwaroomGateway ~ pools:', { all: client.rooms, pools });
+    get_client_room_pools(client) {
+        return Array.from(client.rooms).filter((room) => /_pool_/gi.test(room));
+    }
+    async client_accept_roleplay_room_request(movie, client) {
+        const acceptance_room = this.roleplay_room_acceptance_name(movie);
+        client.join(acceptance_room);
         const { room } = await this.twaroomService.create();
-        client.to(pools[0]).emit('accepted_roleplay_enter_room', room);
+        client.in(acceptance_room).emit('accepted_roleplay_enter_room', room);
+        client.emit('accepted_roleplay_enter_room', room);
     }
     client_sent_message(user, client) {
         this.twaroomService.add_message(user.room_id, {
@@ -112,9 +111,10 @@ __decorate([
 ], TwaroomGateway.prototype, "client_request_roleplay_chat", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('accept_roleplay_room_request'),
-    __param(0, (0, websockets_1.ConnectedSocket)()),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", Promise)
 ], TwaroomGateway.prototype, "client_accept_roleplay_room_request", null);
 __decorate([
