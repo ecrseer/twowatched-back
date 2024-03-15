@@ -5,6 +5,7 @@ import { Twaroom } from './entities/twaroom.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { TwaMessage } from './entities/twamessage.schema';
+import { Movie } from '../movies/entities/movie.schema';
 
 @Injectable()
 export class TwaroomService {
@@ -12,13 +13,13 @@ export class TwaroomService {
     @InjectModel(Twaroom.name) private TwaroomModel: Model<Twaroom>,
   ) {}
 
-  async create(createRoomDto?: CreateTwaroomDto) {
+  async create(movie?: Movie) {
     const MOCK_ROOM: Omit<Twaroom, '_id'> = {
       name: `${new Date().toLocaleDateString()}-name`,
       media_story_id: `${new Date().toLocaleDateString()}-slime`,
       messages: [],
     };
-    const created = new this.TwaroomModel(createRoomDto || MOCK_ROOM);
+    const created = new this.TwaroomModel(MOCK_ROOM);
     const room = await created.save();
     return { room, created };
   }

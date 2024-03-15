@@ -19,6 +19,9 @@ export class Movie {
   @Prop()
   title: string;
 
+  @Prop()
+  tmdb_id: string;
+
   @Prop({ type: () => Object })
   credits: iMovieCredits;
 

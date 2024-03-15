@@ -34,7 +34,11 @@ export class MoviesService {
       const full_data_of_movie = await this.search_movie_with_characters_TMDB(
         `${movie.id}`,
       );
-      const created = await this.MovieModel.create(full_data_of_movie);
+      const created = await this.MovieModel.create({
+        ...full_data_of_movie,
+        id: undefined,
+        tmdb_id: full_data_of_movie.id,
+      });
       return created;
     }
     return found;
