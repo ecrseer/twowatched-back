@@ -12,6 +12,17 @@ export class ChooseCharacterService {
   constructor(private moviesService: MoviesService) {}
 
   async choose() {
-    return await this.moviesService.search_movie_TMDB('The matrix');
+    const movies = await this.moviesService.search_movie_TMDB('The matrix');
+    const chosen_movie = movies.results[0];
+    const characters = await this.moviesService.search_movie_characters_TMDB(
+      chosen_movie.id.toString(),
+    );
+    const cast_with_images = characters.credits.cast.map((character) => {
+      return {
+        ...character,
+        profile_path: `https://image.tmdb.org/t/p/w500${character.profile_path}`,
+      };
+    });
+    return cast_with_images;
   }
 }
