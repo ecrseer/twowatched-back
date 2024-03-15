@@ -12,11 +12,15 @@ import { TwaroomService } from './twaroom.service';
 import { iTwaMovie } from '../movies/entities/Tmdb';
 
 import { iNotification, randomId } from '../utils';
+import { MoviesService } from '../movies/movies.service';
 
 @WebSocketGateway({ cors: true })
 export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
   ROLEPLAY_WAIT_ROOM_PREFIX = `likes_movie_`;
-  constructor(private twaroomService: TwaroomService) {}
+  constructor(
+    private readonly twaroomService: TwaroomService,
+    private readonly moviesService: MoviesService,
+  ) {}
   handleDisconnect(client: any) {
     if (process.env.IS_TESTING) return;
     console.log('handleDisconnect:', client?.rooms);
@@ -110,6 +114,7 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
     @ConnectedSocket()
     client: Socket,
   ) {
+    console.log('~☠️ ~ client_accept_roleplay_room_request ~ movie:', movie);
     const acceptance_room = this.roleplay_room_acceptance_name(movie);
     client.join(acceptance_room);
     const { room } = await this.twaroomService.create();
