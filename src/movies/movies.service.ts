@@ -13,12 +13,30 @@ import {
 } from './tests/axios-requests';
 import { InjectModel } from '@nestjs/mongoose';
 import { Twaroom } from '../twaroom/entities/twaroom.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Movie } from './entities/movie.schema';
 
 @Injectable()
 export class MoviesService {
   constructor(@InjectModel(Movie.name) private MovieModel: Model<Movie>) {}
+
+  public async get_movie_by_id(id: string) {
+    const movie = await this.MovieModel.findById(
+      new mongoose.Types.ObjectId(id),
+    ).exec();
+    console.log('~☠️ ~ MoviesService ~ get_movie_by_id ~ movie:', movie);
+    return movie;
+  }
+  public async get_characters_by_movie_id(id: string) {
+    const movie = await this.get_movie_by_id(id);
+    const cast_with_images = movie.credits.cast.map((character) => {
+      return {
+        ...character,
+        profile_path: `https://image.tmdb.org/t/p/w500${character.profile_path}`,
+      };
+    });
+    return cast_with_images;
+  }
 
   public async get_tmdb_movie_by_name(searched_name: string) {
     const found = await this.MovieModel.findOne({
@@ -49,9 +67,10 @@ export class MoviesService {
     searched_name: string,
   ) {
     // TODO - implement a better search algorithm
-    return results.find((movie) =>
-      new RegExp(searched_name, 'i').test(movie.title),
-    );
+    // return results.find((movie) =>
+    //   new RegExp(searched_name, 'i').test(movie.title),
+    // );
+    return results[0];
   }
 
   public async search_movie_TMDB(searching_movie: string) {

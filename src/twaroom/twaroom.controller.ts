@@ -25,7 +25,7 @@ export class TwaroomController {
     return await this.twaroomService.findOne(room_id);
   }
 
-  @Get('all')
+  @Get('choose-character/:movie_id')
   async choose() {
     return this.chooseCharacterService.choose();
   }

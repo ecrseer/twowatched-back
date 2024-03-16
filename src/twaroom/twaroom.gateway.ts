@@ -117,11 +117,12 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
     console.log('~☠️ ~ client_accept_roleplay_room_request ~ movie:', movie);
     const acceptance_room = this.roleplay_room_acceptance_name(movie);
     client.join(acceptance_room);
+
     const movie_in_db = await this.moviesService.get_tmdb_movie_by_name(
       movie.title,
     );
-    console.log('~☠️ ~ TwaroomGateway ~ movie_in_db:', movie_in_db);
-    const { room } = await this.twaroomService.create();
+
+    const { room } = await this.twaroomService.create(movie_in_db);
     client.in(acceptance_room).emit('accepted_roleplay_enter_room', room);
     client.emit('accepted_roleplay_enter_room', room);
   }
