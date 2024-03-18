@@ -18,8 +18,6 @@ describe('TwaroomService', () => {
     // const result = await service.create(mock_create_room);
     // expect(result?.created).toBeDefined();
     // console.log('~☠️ ~ test ~ result?.created:', result?.created);
-    
-
   });
   afterEach(async () => {
     mongoose.connection.close();

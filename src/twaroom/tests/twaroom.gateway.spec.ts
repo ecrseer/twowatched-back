@@ -38,21 +38,6 @@ describe('TwaroomGateway', () => {
     ioClient2.disconnect();
   });
 
-  async function test_enter_room(client: Socket, name?: string) {
-    return await new Promise<void>((resolve, reject) => {
-      client.emit(
-        'enter_roleplay_notifications_room',
-        client_enter_roleplay_notifications_room.payload,
-        (rooms: string[]) => {
-          if (!rooms || rooms.length < 2) {
-            reject(new Error('No rooms were joined'));
-          }
-          resolve();
-        },
-      );
-    });
-  }
-
   async function test_request_roleplay_chat() {
     return await new Promise<void>((resolve, reject) => {
       ioClient2.on('receive_request_roleplay_chat', (notification: any) => {
@@ -66,6 +51,21 @@ describe('TwaroomGateway', () => {
       });
 
       reject(new Error('No response from server')); // Fix: Replace the rejection reason with an instance of the Error class.
+    });
+  }
+
+  async function test_enter_room(client: Socket, name?: string) {
+    return await new Promise<void>((resolve, reject) => {
+      client.emit(
+        'enter_roleplay_notifications_room',
+        client_enter_roleplay_notifications_room.payload,
+        (rooms: string[]) => {
+          if (!rooms || rooms.length < 2) {
+            reject(new Error('No rooms were joined' + name));
+          }
+          resolve();
+        },
+      );
     });
   }
 
