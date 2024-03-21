@@ -1,17 +1,7 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { TwaroomService } from './twaroom.service';
-import { CreateTwaroomDto } from './dto/create-twaroom.dto';
-import { UpdateTwaroomDto } from './dto/update-twaroom.dto';
-import { TwaMessage } from './entities/twamessage.schema';
 import { ChooseCharacterService } from './choose-character.service';
+import { TmdbCastMemberDTO } from '../movies/dto/Tmdb';
 
 @Controller('twaroom')
 export class TwaroomController {
@@ -25,8 +15,16 @@ export class TwaroomController {
     return await this.twaroomService.findOne(room_id);
   }
 
-  @Get('choose-character/:movie_id')
-  async choose() {
-    return this.chooseCharacterService.choose();
+  @Post('choosed-character/:chat_room_id/:user_id')
+  async choosed_character(
+    @Param('chat_room_id') chat_room_id: string,
+    @Param('user_id') user_id: string,
+    @Body() cast_member: TmdbCastMemberDTO,
+  ) {
+    return await this.chooseCharacterService.choose(
+      chat_room_id,
+      user_id,
+      cast_member,
+    );
   }
 }

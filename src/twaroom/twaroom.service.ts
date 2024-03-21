@@ -18,6 +18,7 @@ export class TwaroomService {
       name: `${new Date().toLocaleDateString()}-name`,
       media_story_id: `${movie._id}`,
       messages: [],
+      usersCharacters: {},
     };
     const created = new this.TwaroomModel(MOCK_ROOM);
     const room = await created.save();

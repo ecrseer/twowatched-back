@@ -24,7 +24,7 @@ export class MoviesService {
     const movie = await this.MovieModel.findById(
       new mongoose.Types.ObjectId(id),
     ).exec();
-    console.log('~☠️ ~ MoviesService ~ get_movie_by_id ~ movie:', movie);
+
     return movie;
   }
   public async get_characters_by_movie_id(id: string) {

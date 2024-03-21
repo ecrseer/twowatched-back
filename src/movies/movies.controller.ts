@@ -17,8 +17,6 @@ export class MoviesController {
 
   @Get('characters/:movie_id')
   public async findCharactersById(@Param('movie_id') movie_id: string) {
-    console.log('~☠️ ~ MoviesController ~ findById ~ movie_id:', movie_id);
-
     return this.moviesService.get_characters_by_movie_id(movie_id);
   }
 }

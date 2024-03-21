@@ -28,10 +28,6 @@ export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  afterInit(server: any) {
-    // console.log('🚀 ~ afterInit ~ server:', { server });
-  }
-
   @SubscribeMessage('enter_roleplay_notifications_room')
   client_enter_roleplay_notifications_room(
     @ConnectedSocket() client: Socket,
