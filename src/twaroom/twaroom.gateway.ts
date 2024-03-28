@@ -2,7 +2,6 @@ import {
   ConnectedSocket,
   MessageBody,
   OnGatewayDisconnect,
-  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -15,7 +14,7 @@ import { iNotification, randomId } from '../utils';
 import { MoviesService } from '../movies/movies.service';
 
 @WebSocketGateway({ cors: true })
-export class TwaroomGateway implements OnGatewayInit, OnGatewayDisconnect {
+export class TwaroomGateway implements OnGatewayDisconnect {
   ROLEPLAY_WAIT_ROOM_PREFIX = `likes_movie_`;
   constructor(
     private readonly twaroomService: TwaroomService,
