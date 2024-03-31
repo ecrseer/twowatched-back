@@ -1,18 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMovieDto } from './dto/create-movie.dto';
-import { UpdateMovieDto } from './dto/update-movie.dto';
 import axios from 'axios';
 import {
   iSearchRequestTmdbMovieDTO,
   iTmdbMovieCastCredits,
   iTmdbMovieDTO,
 } from './entities/Tmdb';
-import {
-  axios_demon_sample,
-  axios_matrix_sample,
-} from './tests/axios-requests';
 import { InjectModel } from '@nestjs/mongoose';
-import { Twaroom } from '../twaroom/entities/twaroom.schema';
 import mongoose, { Model } from 'mongoose';
 import { Movie } from './entities/movie.schema';
 
