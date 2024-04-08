@@ -10,32 +10,39 @@ import { Server, Socket } from 'socket.io';
 import { TwaroomService } from './twaroom.service';
 import { iTwaMovie } from '../movies/entities/Tmdb';
 
-import { iNotification, randomId } from '../utils';
+import { iNotification } from '../utils';
 import { MoviesService } from '../movies/movies.service';
 
 @WebSocketGateway({ cors: true })
 export class TwaroomGateway implements OnGatewayDisconnect {
   ROLEPLAY_WAIT_ROOM_PREFIX = `likes_movie_`;
+
   constructor(
     private readonly twaroomService: TwaroomService,
     private readonly moviesService: MoviesService,
   ) {}
+
   handleDisconnect(client: any) {
     if (process.env.IS_TESTING) return;
     console.log('handleDisconnect:', client?.rooms);
   }
+
   @WebSocketServer()
   server: Server;
 
   @SubscribeMessage('enter_roleplay_notifications_room')
-  client_enter_roleplay_notifications_room(
+  async client_enter_roleplay_notifications_room(
     @ConnectedSocket() client: Socket,
     @MessageBody()
     dto: {
-      moviesList: iTwaMovie[];
+      moviesListIds: string[];
     },
   ) {
-    for (const movie of dto.moviesList) {
+    const movieList = await this.moviesService.get_movie_by_ids(
+      dto.moviesListIds,
+    );
+
+    for (const movie of movieList) {
       client.join(this.roleplay_room_name(movie));
     }
 
@@ -49,6 +56,7 @@ export class TwaroomGateway implements OnGatewayDisconnect {
 
     return room;
   }
+
   private roleplay_room_acceptance_name(movie: iTwaMovie) {
     const room = `${this.ROLEPLAY_WAIT_ROOM_PREFIX}${
       movie.name || movie.title
