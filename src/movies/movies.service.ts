@@ -20,6 +20,15 @@ export class MoviesService {
 
     return movie;
   }
+
+  public async get_movie_by_ids(ids: string[]) {
+    const movies = await this.MovieModel.find({
+      _id: { $in: ids.map((id) => new mongoose.Types.ObjectId(id)) },
+    });
+
+    return movies;
+  }
+
   public async get_characters_by_movie_id(id: string) {
     const movie = await this.get_movie_by_id(id);
     const cast_with_images = movie.credits.cast.map((character) => {
@@ -87,6 +96,7 @@ export class MoviesService {
     //   axios_matrix_sample[0].id.toString(),
     // );
   }
+
   public async search_movie_with_characters_TMDB(movie_id: string) {
     const base_url = `https://api.themoviedb.org/3/movie/${movie_id}`;
 
