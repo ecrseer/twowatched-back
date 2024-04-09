@@ -85,7 +85,7 @@ export class MoviesService {
       params: {
         query: searching_movie,
         include_adult: true,
-        language: 'en-US',
+        language: 'pt-BR',
         page: 1,
         api_key: process.env.TMDB_API_KEY,
       },
