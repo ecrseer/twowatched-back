@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTwaroomDto } from './dto/create-twaroom.dto';
-import { UpdateTwaroomDto } from './dto/update-twaroom.dto';
+
 import { Twaroom } from './entities/twaroom.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { TwaMessage } from './entities/twamessage.schema';
-import { Movie, MovieDocument } from '../movies/entities/movie.schema';
+import { MovieDocument } from '../movies/entities/movie.schema';
 
 @Injectable()
 export class TwaroomService {
@@ -33,12 +32,17 @@ export class TwaroomService {
     return await this.TwaroomModel.findOne({ _id: room_id }).exec();
   }
 
-  public async add_message(room_id: string, message: TwaMessage) {
-    const updated = await this.TwaroomModel.updateOne(
+  public async add_message(
+    room_id: string,
+    message: TwaMessage,
+  ): Promise<Twaroom> {
+    const updated = await this.TwaroomModel.findOneAndUpdate(
       { _id: room_id },
       { $push: { messages: message } },
+      { new: true },
     );
-    return { updated };
+
+    return updated;
   }
 
   remove(id: number) {

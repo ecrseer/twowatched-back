@@ -131,15 +131,16 @@ export class TwaroomGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage('send_message')
-  client_sent_message(
+  async client_sent_message(
     @MessageBody()
     user: { room_id: string; sender_user_id: string; content: string },
     @ConnectedSocket() client: Socket,
   ) {
-    this.twaroomService.add_message(user.room_id, {
+    const room = await this.twaroomService.add_message(user.room_id, {
       content: user.content,
       sender_user_id: user.sender_user_id,
     });
-    client.to(user.room_id).emit('append_message', user);
+    client.to(user.room_id).emit('append_message', room);
+    return room;
   }
 }
