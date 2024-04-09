@@ -3,8 +3,11 @@ import { Socket, io } from 'socket.io-client';
 import { TwaroomGateway } from '../twaroom.gateway';
 // import { TwaroomService } from '../twaroom.service';
 
-import { client_enter_roleplay_notifications_room } from './data-mocks';
-import { createTestNestApp } from './utils';
+import {
+  client_enter_roleplay_notifications_room,
+  mock_enter_roleplay_room,
+} from './data-mocks';
+import { createMyRealDBTestNestApp } from './utils';
 
 describe('TwaroomGateway', () => {
   let gateway: TwaroomGateway;
@@ -13,7 +16,7 @@ describe('TwaroomGateway', () => {
   let ioClient2: Socket;
 
   beforeEach(async () => {
-    const { nestApp } = await createTestNestApp();
+    const { nestApp } = await createMyRealDBTestNestApp();
     app = nestApp;
     gateway = app.get<TwaroomGateway>(TwaroomGateway);
     // Create a new client that will interact with the gateway
@@ -58,7 +61,7 @@ describe('TwaroomGateway', () => {
     return await new Promise<void>((resolve, reject) => {
       client.emit(
         'enter_roleplay_notifications_room',
-        client_enter_roleplay_notifications_room.payload,
+        mock_enter_roleplay_room.payload,
         (rooms: string[]) => {
           if (!rooms || rooms.length < 2) {
             reject(new Error('No rooms were joined' + name));
@@ -110,6 +113,7 @@ describe('TwaroomGateway', () => {
         moviesList: client_enter_roleplay_notifications_room.payload.moviesList,
       });
     });
+    // console.log('finished');
   });
 
   it('should enter room and chat', async () => {

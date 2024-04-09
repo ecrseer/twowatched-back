@@ -2,13 +2,13 @@ import { TwaroomService } from '../twaroom.service';
 
 import { mock_create_room } from './data-mocks';
 import mongoose from 'mongoose';
-import { createTestNestApp } from './utils';
+import { createMyRealDBTestNestApp } from './utils';
 
 describe('TwaroomService', () => {
   let service: TwaroomService;
 
   beforeEach(async () => {
-    const { module } = await createTestNestApp();
+    const { module } = await createMyRealDBTestNestApp();
 
     service = module.get<TwaroomService>(TwaroomService);
   });

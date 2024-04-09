@@ -15,13 +15,16 @@ export interface iTmdbMovieDTO {
   vote_count: number;
   origin_country: string[];
   title?: string;
+  _id?: any;
 }
+
 export interface iSearchRequestTmdbMovieDTO {
   page: number;
   total_pages: number;
   total_results: number;
   results: iTmdbMovieDTO[];
 }
+
 export interface iTwaMovie extends Partial<iTmdbMovieDTO> {}
 
 export interface TmdbProductionCompany {
@@ -56,6 +59,7 @@ export interface TmdbCastMember {
   credit_id: string;
   order: number;
 }
+
 export class TmdbCastMemberClass {
   adult: boolean;
   gender: number;
