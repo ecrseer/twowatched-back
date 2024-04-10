@@ -7,6 +7,11 @@ import { SearchMoviesByIdsDto } from './dto/search-movies-by-ids-dto';
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
+  @Get('/debugflyio')
+  public async debugflyio() {
+    return 'this.moviesService.debugflyio()';
+  }
+
   @Get('characters/:movie_id')
   public async findCharactersById(@Param('movie_id') movie_id: string) {
     return this.moviesService.get_characters_by_movie_id(movie_id);
