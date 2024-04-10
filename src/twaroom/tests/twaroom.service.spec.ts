@@ -19,7 +19,7 @@ describe('TwaroomService', () => {
     const MOCK_EXISTING_ID = '66149b56fcff978a0d128672';
     const random = randomId();
     const MOCK_NEW_MSG = {
-      content: 'last 42' + random,
+      content: 'test 42' + random,
       sender_user_id: '66149aab5b5e831a494e6cfa',
     };
     const room = await service.add_message(MOCK_EXISTING_ID, MOCK_NEW_MSG);
@@ -28,7 +28,7 @@ describe('TwaroomService', () => {
     expect(room).toBeDefined();
     expect(room.messages?.length > 0).toBeDefined();
 
-    expect(room.messages?.at(-1).content).toEqual('last 42' + random);
+    expect(room.messages?.at(-1).content).toEqual('test 42' + random);
 
     // expect(room.messages?.length > 0).toBeDefined();
   });

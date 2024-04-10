@@ -38,6 +38,7 @@ export class TwaroomGateway implements OnGatewayDisconnect {
       moviesListIds: string[];
     },
   ) {
+    console.log('=>(twaroomenter :44) dto.moviesListIds', dto.moviesListIds);
     const movieList = await this.moviesService.get_movie_by_ids(
       dto.moviesListIds,
     );
@@ -45,6 +46,11 @@ export class TwaroomGateway implements OnGatewayDisconnect {
     for (const movie of movieList) {
       client.join(this.roleplay_room_name(movie));
     }
+
+    console.log(
+      '=>(er_roleplay_notifications_room.gateway.ts:87) client',
+      client.rooms,
+    );
 
     return Array.from(client.rooms);
   }
@@ -93,12 +99,14 @@ export class TwaroomGateway implements OnGatewayDisconnect {
     const MOCK_USER_ID = new Date().getSeconds();
     const notification: iNotification = {
       title: 'Someone wants to roleplay!',
-      description: `${MOCK_USER_ID} wants to roleplay ${
-        movie.name || movie.title
-      }!`,
+      description: `Someone wants to roleplay ${movie.name || movie.title}!`,
       type: 'info',
     };
 
+    console.log('=>(send_roleplay_room_request.gateway.ts:115) room', {
+      room,
+      rooms: client.rooms,
+    });
     client
       .to(room)
       .emit('receive_request_roleplay_chat', { notification, movie });
@@ -117,7 +125,6 @@ export class TwaroomGateway implements OnGatewayDisconnect {
     @ConnectedSocket()
     client: Socket,
   ) {
-    console.log('~☠️ ~ client_accept_roleplay_room_request ~ movie:', movie);
     const acceptance_room = this.roleplay_room_acceptance_name(movie);
     client.join(acceptance_room);
 
