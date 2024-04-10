@@ -45,7 +45,42 @@ export class TwaroomService {
     return updated;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} twaroom`;
+  public async get_most_count_movies_roleplays_from_user(user_id: string) {
+    const most_chatted_movies_from_user = this.TwaroomModel.aggregate([
+      {
+        $match: {
+          'messages.sender_user_id': user_id,
+        },
+      },
+      {
+        $project: {
+          movie_id: '$media_story_id',
+        },
+      },
+      {
+        $group: {
+          _id: '$movie_id',
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $addFields: {
+          movieObjectId: {
+            $toObjectId: '$_id',
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'movies',
+          localField: 'movieObjectId',
+          foreignField: '_id',
+          as: 'card_movie',
+        },
+      },
+    ]).exec();
+    return most_chatted_movies_from_user;
   }
 }
