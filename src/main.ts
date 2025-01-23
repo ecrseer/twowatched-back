@@ -11,7 +11,11 @@ async function bootstrap() {
   const port =
     process.env.PORT || process.env.NODE_ENV === 'production' ? 3000 : 3042;
   console.log('🚀 ~ main ~PORT:', port);
-  app.enableCors();
+  app.enableCors({
+    origin: 'https://twowatched-front.vercel.app', // Replace with your frontend domain
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
   await app.listen(port);
 }
 bootstrap();
