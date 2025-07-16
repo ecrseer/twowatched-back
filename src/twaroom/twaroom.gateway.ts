@@ -103,6 +103,8 @@ export class TwaroomGateway implements OnGatewayDisconnect {
       type: 'info',
     };
 
+    client.join(room);
+
     console.log('=>(send_roleplay_room_request.gateway.ts:115) room', {
       room,
       rooms: client.rooms,
@@ -111,8 +113,6 @@ export class TwaroomGateway implements OnGatewayDisconnect {
       .to(room)
       .emit('receive_request_roleplay_chat', { notification, movie });
     // client.leave(all_room_polls);
-
-    client.join(this.roleplay_room_acceptance_name(movie));
   }
 
   private get_client_room_pools(client: Socket) {

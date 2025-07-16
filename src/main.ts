@@ -8,9 +8,12 @@ async function bootstrap() {
   // const redisIoAdapter = new RedisIoAdapter(app);
   // await redisIoAdapter.connectToRedis();
   // app.useWebSocketAdapter(redisIoAdapter);
-  const port =
-    process.env.PORT || process.env.NODE_ENV === 'production' ? 3000 : 3042;
-  console.log('🚀 ~ main ~PORT:', port);
+  console.log('=>(main.ts:13) process.env.PORT', process.env.PORT || 2);
+  const padrao = process.env.NODE_ENV === 'production' ? 3000 : 3042;
+  console.log('=>(main.ts:13) padrao', padrao);
+  const port = process.env.PORT || padrao;
+  console.log('🚀 ~ main ~xOR:', port);
+
   app.enableCors({
     origin: 'https://twowatched-front.vercel.app', // Replace with your frontend domain
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
