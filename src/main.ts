@@ -14,8 +14,12 @@ async function bootstrap() {
   const port = process.env.PORT || padrao;
   console.log('🚀 ~ main ~xOR:', port);
 
+  const corsOrigin =
+    process.env.NODE_ENV === 'production'
+      ? 'https://twowatched-front.vercel.app'
+      : '*';
   app.enableCors({
-    origin: 'https://twowatched-front.vercel.app', // Replace with your frontend domain
+    origin: corsOrigin,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
