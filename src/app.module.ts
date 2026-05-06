@@ -25,6 +25,7 @@ import { PublicacaoModule } from './publicacao/publicacao.module';
       database: process.env.PG_DB,
       entities: [Publicacao],
       synchronize: true,
+      ssl: { rejectUnauthorized: false },
     }),
     PublicacaoModule,
   ],

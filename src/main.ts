@@ -10,7 +10,7 @@ async function bootstrap() {
   // app.useWebSocketAdapter(redisIoAdapter);
   console.log('=>(main.ts:13) process.env.PORT', process.env.PORT || 2);
   const padrao = process.env.NODE_ENV === 'production' ? 3000 : 3042;
-  console.log('=>(main.ts:13) padrao', padrao);
+  console.log('=>(d.ts:13) padrao', padrao);
   const port = process.env.PORT || padrao;
   console.log('🚀 ~ main ~xOR:', port);
 
@@ -18,6 +18,7 @@ async function bootstrap() {
     process.env.NODE_ENV === 'production'
       ? 'https://twowatched-front.vercel.app'
       : '*';
+  console.log('🚀 ~ :21 ~ bootstrap ~ corsOrigin:', corsOrigin);
   app.enableCors({
     origin: corsOrigin,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
