@@ -96,7 +96,7 @@ export class TwaroomGateway implements OnGatewayDisconnect {
 
   private async send_roleplay_room_request(movie: iTwaMovie, client: Socket) {
     const room = this.roleplay_room_name(movie);
-    const MOCK_USER_ID = new Date().getSeconds();
+    // const MOCK_USER_ID = new Date().getSeconds();
     const notification: iNotification = {
       title: 'Someone wants to roleplay!',
       description: `Someone wants to roleplay ${movie.name || movie.title}!`,
@@ -125,15 +125,14 @@ export class TwaroomGateway implements OnGatewayDisconnect {
     @ConnectedSocket()
     client: Socket,
   ) {
-    const acceptance_room = this.roleplay_room_acceptance_name(movie);
-    client.join(acceptance_room);
+    const wait_room = this.roleplay_room_name(movie);
 
     const movie_in_db = await this.moviesService.get_tmdb_movie_by_name(
       movie.title,
     );
 
     const { room } = await this.twaroomService.create(movie_in_db);
-    client.in(acceptance_room).emit('accepted_roleplay_enter_room', room);
+    client.in(wait_room).emit('accepted_roleplay_enter_room', room);
     client.emit('accepted_roleplay_enter_room', room);
   }
 
